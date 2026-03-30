@@ -1,8 +1,6 @@
-# ResFiT
+# ChunkRL
 
-This repository contains the official release of code for paper "Residual Off-Policy RL for Finetuning Behavior Cloning Policies".
-
-Website: https://residual-offpolicy-rl.github.io/
+This repository is based on the code for paper "Residual Off-Policy RL for Finetuning Behavior Cloning Policies".
 
 Paper: https://arxiv.org/abs/2509.19301
 
@@ -15,8 +13,8 @@ Paper: https://arxiv.org/abs/2509.19301
 Create a new conda environment with Python 3.10:
 
 ```bash
-conda create -n residual python=3.10 -y
-conda activate residual
+conda create -n chunkrl python=3.10 -y
+conda activate chunkrl
 ```
 
 #### 2. Install Core Dependencies
