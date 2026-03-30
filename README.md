@@ -50,8 +50,9 @@ If you encounter CUDA-related issues, clean out CPU-only installs and reinstall 
 # Remove CPU-only torchcodec
 pip uninstall -y torchcodec
 
-# Install CUDA-enabled wheel for CUDA 12.8
-pip install --no-cache-dir torchcodec --index-url https://download.pytorch.org/whl/cu128
+# Install CUDA-enabled wheel for CUDA 12.8, if CUDA 13.0 shows at nvidai-smi, then cu130
+pip install --no-cache-dir torchcodec --index-url https://download.pytorch.org/whl/cu128 
+#  verify install by: import torchcodec
 ```
 
 Verify CUDA is enabled:

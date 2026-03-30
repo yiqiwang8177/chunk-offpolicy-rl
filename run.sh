@@ -1,0 +1,1 @@
+bash ./resfit/lerobot/shell/launch_act_can.sh
