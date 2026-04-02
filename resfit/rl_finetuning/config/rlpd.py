@@ -146,6 +146,7 @@ class RLPDAlgoConfig:
     batch_size: int = 256
     buffer_size: int = 200_000
     learning_starts: int = 10_000
+    scratch_dir: str = '' 
 
     # Discounting / target updates ------------------------------------------
     gamma: float = 0.99

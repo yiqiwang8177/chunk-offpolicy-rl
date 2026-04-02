@@ -55,7 +55,7 @@ python -m resfit.lerobot.scripts.train_bc_dexmg \
     --rollout_freq 5000 \
     --eval_video_key observation.images.frontview \
     --eval_render_size 224 \
-    --eval_num_envs 16 \
+    --eval_num_envs 10 \
     --eval_num_episodes 100 \
     --wandb_project dexmg-box-clean-bc \
     --wandb_enable

@@ -37,7 +37,7 @@ from lerobot.common.datasets.lerobot_dataset import LeRobotDataset
 from omegaconf import OmegaConf
 from tensordict import TensorDict
 from torch.utils.data import DataLoader
-from torchrl.data import LazyTensorStorage, ReplayBuffer, TensorDictPrioritizedReplayBuffer
+from torchrl.data import LazyTensorStorage, ReplayBuffer, TensorDictPrioritizedReplayBuffer, LazyMemmapStorage
 from tqdm import tqdm
 
 import wandb
@@ -398,7 +398,7 @@ def main(cfg: ResidualTD3DexmgConfig):
 
     # Use TensorDictPrioritizedReplayBuffer with optimized prefetching
     online_rb = TensorDictPrioritizedReplayBuffer(
-        storage=LazyTensorStorage(max_size=cfg.algo.buffer_size, device="cpu"),
+        storage=LazyTensorStorage(max_size=cfg.algo.buffer_size, device="cpu") if cfg.algo.scratch_dir == '' else LazyMemmapStorage(max_size=cfg.algo.buffer_size, device="cpu", scratch_dir=cfg.algo.scratch_dir),
         alpha=alpha,
         beta=beta,
         eps=1e-6,  # Small epsilon added to priorities to prevent zero values

@@ -41,7 +41,7 @@ from dataclasses import asdict, is_dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any
-
+import gc
 import imageio
 import numpy as np
 import torch
@@ -398,7 +398,6 @@ def _run_rollouts(
 
     return success_rate, video_path, final_fps
 
-
 # -----------------------------------------------------------------------------
 # Main
 # -----------------------------------------------------------------------------
@@ -563,8 +562,8 @@ def main(cfg: argparse.Namespace):
         drop_last=True,
         persistent_workers=cfg.num_workers > 0,
     )
-    dl_iter = cycle(dataloader)
-
+    # dl_iter = cycle(dataloader), this will cause RAM explosion
+    dl_iter = iter(dataloader)
     # ---------------------------------------------------------------------
     # Policy + optimizer
     # ---------------------------------------------------------------------
@@ -733,7 +732,14 @@ def main(cfg: argparse.Namespace):
         iter_start_t = time.perf_counter()
 
         data_t0 = time.perf_counter()
-        batch: dict[str, Any] = next(dl_iter)
+        try:
+            batch: dict[str, Any] = next(dl_iter)
+        except StopIteration:
+            del batch
+            gc.collect()
+            torch.cuda.empty_cache()
+            dl_iter = iter(dataloader)
+            batch = next(dl_iter)
 
         # Move tensors to device
         for key, val in batch.items():
@@ -781,6 +787,12 @@ def main(cfg: argparse.Namespace):
                     },
                     step=step,
                 )
+            
+            
+
+        # if step % cfg.log_freq == 0:
+        #     gc.collect()
+        #     torch.cuda.empty_cache()
 
         # Checkpointing ----------------------------------------------
         if (step % cfg.save_freq == 0 and step != start_step) or step + 1 == cfg.steps:
@@ -883,6 +895,9 @@ def main(cfg: argparse.Namespace):
                     art_best = wandb.Artifact(name=f"run_{wandb.run.id}_best", type="model")
                     art_best.add_dir(str(best_dir))
                     wandb.log_artifact(art_best, aliases=["best", "latest"])
+            del success_rate, video_path, final_fps
+            gc.collect()
+            torch.cuda.empty_cache()
 
     logger.info(colored("Training finished!", "green", attrs=["bold"]))
     if wandb is not None:

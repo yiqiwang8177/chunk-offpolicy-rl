@@ -137,7 +137,8 @@ class ResidualTD3CanConfig(ResidualTD3DexmgConfig):
 
     base_policy: BasePolicyConfig = field(
         default_factory=lambda: BasePolicyConfig(
-            wandb_id="robomimic-can-bc/sdo8cku7",
+            # wandb_id="robomimic-can-bc/sdo8cku7",
+            wandb_id="robomimic-can-bc/pd97mmqc",
         )
     )
 
